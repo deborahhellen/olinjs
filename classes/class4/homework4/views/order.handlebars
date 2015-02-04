@@ -1,0 +1,9 @@
+<h2>Order Here</h2>
+<form id = "orderForm">
+	{{#each ingredients}}
+	<input type="checkbox" name="price" value={{this.price}}>{{this.name}}: ${{this.price}}</br>
+	{{/each}}
+	<input type="submit" value = "Place Order!">
+</form>
+<p>Current total: $<span id = "total">0</span></p>
+<div id="completeOrder"></div>

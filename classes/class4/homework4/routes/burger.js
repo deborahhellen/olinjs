@@ -48,6 +48,7 @@ var ingredients = function (req, res) {
 
 var outOfStock = function (req, res) {
 	var objID = req.body.id;
+	console.log(req.body);
 
 	Ingredient.findOneAndRemove({ _id : objID}, function(err, removedItem) {
 		if (err) {
@@ -78,14 +79,21 @@ var addIngredient = function(req, res) {
 		if (err) {
 			console.error("Couldn't save new item", err);
 		};
-		res.send('Added ingredient: ' + ingred.name);
+		res.send(ingred);
 	});
 
 };
 
+var newOrder = function (req, res) {
+	Ingredient.find({}, function(err, ingList) {
+		if (err) {
+			console.error("Couldn't find ingredients", err);
+		};
+		res.render('order', {'ingredients': ingList});
+	});
+};
 
-
-
+module.exports.newOrder = newOrder;
 module.exports.ingredients = ingredients;
 module.exports.outOfStock = outOfStock;
 module.exports.edit = edit;

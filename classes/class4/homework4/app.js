@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 
 var index = require('./routes/index');
 var burger = require('./routes/burger');
+var kitchen = require('./routes/kitchen');
 
 var app = express();
 
@@ -23,6 +24,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', index.home);
 
 app.get('/ingredients', burger.ingredients);
+
+app.get('/kitchen', kitchen.orders);
+
+app.get('/order', burger.newOrder);
 
 app.post('/outOfStock', burger.outOfStock);
 

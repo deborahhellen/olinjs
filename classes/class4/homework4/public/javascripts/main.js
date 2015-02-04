@@ -2,9 +2,10 @@
 
 $(document).ready(function() { 
 
-	var $addForm = $(".addForm");
-	var $outOfStockForm = $(".outOfStockForm");
-	var $editForm = $(".editForm");
+	var $addForm = $("#addForm");
+	var $outOfStockForm = $("#outOfStockForm");
+	var $editForm = $("#editForm");
+	var $orderForm = $("#orderForm");
 
 	var onError = function(data, status) {
 		//Log the status and error to the console
@@ -15,21 +16,37 @@ $(document).ready(function() {
 
 	var onSuccessAdd = function(data, status) {
 		//Reloads the section when we've successfully added the item
-		//TODO: Figure out how to load just the list item instead of the whole page
-		//window.location.reload();
 		console.log("Successfully added " + data);
+
+		//Add the response from the server to the bottom of the list
+		$("ul").append('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStockForm" action = "outOfStock" method="POST">' + 
+		'<input type = "hidden" name = "id" value = ' + data.id + '></br><input type = "hidden" name = "name" value = ' + data.name + '></br>' + 
+  		'<input type = "hidden" name = "price" value = ' + data.price + '></br><input type = "submit" value = "Out of Stock">' + 
+  		'</form></br><form id="editForm" action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
+	  	'<input type = "hidden" name = "id" value = ' + data.id + '></br><input type="submit" value="Edit Item"></form></br>');
 	};
 
 	var onSuccessDel = function(data, status) {
 		//Reloads the section when we've successfully deleted the item
-		//window.location.reload();
 		console.log("Successfully deleted" + data);
 	};
 
 	var onSuccssEdit = function(data, status) {
 		//Reloads the window when we've successfully edited the item
-		//window.location.reload();
 		console.log("Successfully edited " + data);
+	};
+
+	var getChecked = function() {
+	//Updates running total of order as items are checked/unchecked
+		var items = $orderForm.children();
+		var total = 0;
+		for (var i=0; i<items.length; i++) {
+			if($(items[i]).prop('checked')) {
+				var price = Number(items[i].value);
+				total += price;
+			};
+		};
+		$("#total").html(total);
 	};
 
 	$addForm.submit(function(event) {
@@ -47,11 +64,18 @@ $(document).ready(function() {
 	});
 
 	$outOfStockForm.submit(function(event) {
+
+		//what the fuck is this doing?
 		event.preventDefault();
 		var id = $outOfStockForm.find("[name = 'id']").val();
+		var name = $outOfStockForm.find("[name = 'name']").val();
+		var price = $outOfStockForm.find("[name = 'price']").val();
+
 
 		$.post('outOfStock', {
-			id: id
+			id: id,
+			name: name,
+			price: price
 		})
 		.done(onSuccessDel)
 		.error(onError);
@@ -71,9 +95,10 @@ $(document).ready(function() {
 		.done(onSuccssEdit)
 		.error(onError);
 	});
+
+	$( "input[type=checkbox]" ).on( "click", getChecked );
+
 });
-
-
 
 
 
