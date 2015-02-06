@@ -1,8 +1,14 @@
 <h2>Order Here</h2>
 <form id = "orderForm" action="submitOrder" method="POST">
 	{{#each ingredients}}
-	<input type="checkbox" name={{this.name}} value={{this.price}}>{{this.name}} : ${{this.price}}</br>
-	{{/each}}
+		{{#if this.inStock}}
+			<input type="checkbox" name={{this.name}} value={{this.price}}>{{this.name}} : ${{this.price}} </br>
+		{{else}}
+			<input type="checkbox" name={{this.name}} value={{this.price}} disabled>{{this.name}} : ${{this.price}} Out of Stock</br>
+		{{/if}}
+	{{/each}}</br>
+	
+	
 	<input type="submit" value = "Place Order!">
 </form>
 <p>Current total: $<span id = "total">0</span></p>

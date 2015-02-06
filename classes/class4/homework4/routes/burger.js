@@ -1,10 +1,13 @@
 var path = require('path');
 var mongoose = require('mongoose');
 
+var routes = {};
+
 //Defining schema for ingredients
 var ingredSchema = mongoose.Schema({
 	name: String,
-	price: Number
+	price: Number,
+	inStock: Boolean
 });
 
 //Defining the order the kitchen gets
@@ -19,32 +22,34 @@ var Order = mongoose.model("Order", orderSchema);
 
 
 //Shows the list of available ingredients
-var ingredients = function (req, res) {
+routes.ingredients = function (req, res) {
 	Ingredient.find({}, function(err, ingList) {
 		if (err) {
 			console.error("Couldn't find ingredients", err);
+			res.status(500).send("Couldn't get ingredients list");
 		};
 		res.render('ingredients', {'ingredients': ingList});
 	});
 };
 
-var outOfStock = function (req, res) {
+routes.outOfStock = function (req, res) {
 //Flags an item as out of stock 
 //TODO: make this update the status to out of stock rather than just delete
 	var objID = req.body.id;
 	console.log(req.body);
 
-	Ingredient.findOneAndRemove({ _id : objID}, function(err, removedItem) {
+	Ingredient.findOneAndUpdate({ _id : objID}, {inStock: false}, function(err, removedItem) {
 		if (err) {
 			console.error("Couldn't find and remove out of stock item", err);
+			res.status(500).send("Coulddn't find and remove out of stock item");
 		};
-		console.log("removed " + removedItem);
+		console.log(removedItem + "Is out of stock");
 		res.send(removedItem);
 	});
 };
 
-var edit = function(req, res) {
-//Allows users to update the name and price of an item
+routes.edit = function(req, res) {
+// Handles updating the name and price of an item
 	var objID = req.body.id;
 	var newName = req.body.name;
 	var newPrice = req.body.price;
@@ -52,37 +57,43 @@ var edit = function(req, res) {
 	Ingredient.findOneAndUpdate( { _id: objID}, {name: newName, price: newPrice}, function(err, ingred, numberAffected) {
 		if (err) {
 			console.error("Couldn't update name and price", err);
+			res.status(500).send("Couldn't update the ingredient");
 		};
 		console.log(ingred);
 		res.send(ingred);
 	});
 };
 
-var addIngredient = function(req, res) {
-//Allows the user to add a new ingredient
-	console.log(req.body);
-	var newIngredient = new Ingredient({name: req.body.name, price: req.body.price});
+routes.addIngredient = function(req, res) {
+// Handles adding a new ingredient 
+
+	var isInStock = true;	// When a new ingredient is added, it is in stock
+
+	var newIngredient = new Ingredient({name: req.body.name, price: req.body.price, inStock: isInStock});
+	
 	newIngredient.save( function(err, ingred, numberAffected) {
 		if (err) {
 			console.error("Couldn't save new item", err);
+			res.status(500).send("Couldn't save the new ingredient to the db");
 		};
-		console.log(ingred);
 		res.send(ingred);
 	});
 
 };
 
-var newOrder = function (req, res) {
-//Shows the user the blank order form with all of the available ingredients
+routes.newOrder = function (req, res) {
+// Gets the blank order form with all of the available ingredients
 	Ingredient.find({}, function(err, ingList) {
 		if (err) {
 			console.error("Couldn't find ingredients", err);
+			res.status(500).send("Couldn't find available ingredients for the order form");
 		};
 		res.render('order', {'ingredients': ingList});
 	});
 };
 
-var orders = function (req, res) {
+routes.orders = function (req, res) {
+// Gets all of the pending orders
 	Order.find({}, function(err, orders) {
 		if (err) {
 			console.error("Couldn't find any orders", err);
@@ -92,8 +103,8 @@ var orders = function (req, res) {
 	});
 };
 
-var submitOrder = function (req, res) {
-	//save all of the foods that the user checked in a group
+routes.submitOrder = function (req, res) {
+// Save all of the foods that the user checked in an Order
 
 	//Get a list of the ingredients in the order
 	var orderIng = JSON.parse(req.body.ingredients);
@@ -110,14 +121,15 @@ var submitOrder = function (req, res) {
 	});
 };
 
-var completedOrder = function (req, res) {
+routes.completedOrder = function (req, res) {
 //Removes the order from the database once "completed"
 	var orderId = req.body.id; 
 	console.log(orderId);
 
 	Order.findOneAndRemove({ _id : orderId}, function(err, removedItem) {
 		if (err) {
-			console.error("Couldn't find and remove out of stock item", err);
+			console.error("Couldn't find and remove order ", err);
+			res.status(500).send("Couldn't remove completed order");
 		};
 		console.log("removed " + removedItem);
 		res.send(removedItem);
@@ -125,14 +137,8 @@ var completedOrder = function (req, res) {
 };
 
 
-module.exports.orders = orders;
-module.exports.newOrder = newOrder;
-module.exports.ingredients = ingredients;
-module.exports.outOfStock = outOfStock;
-module.exports.edit = edit;
-module.exports.addIngredient = addIngredient;
-module.exports.submitOrder = submitOrder;
-module.exports.completedOrder = completedOrder;
+module.exports = routes;
+
 	
 
 

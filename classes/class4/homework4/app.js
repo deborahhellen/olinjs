@@ -40,7 +40,7 @@ app.post('/submitOrder', burger.submitOrder);
 app.post('/completed', burger.completedOrder);
 
 
-//var mongoURI = process.env.MONGOURI || "mongodb://localhost/ingredients";
-mongoose.connect('mongodb://localhost/ingredients');
+mongoURI = process.env.MONGOURI || "mongodb://localhost/ingredients";
+mongoose.connect(mongoURI);
 
 app.listen(3000);

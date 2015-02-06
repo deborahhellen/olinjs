@@ -1,4 +1,6 @@
-//Handles the ajax requests on the /ingredients page
+/* Handles the ajax requests on the /ingredients, the /kitchen, 
+	and the /order pages
+*/
 
 $(document).ready(function() { 
 
@@ -13,46 +15,46 @@ $(document).ready(function() {
 
 	var onSuccessAdd = function(data, status) {
 	/* Adds the new item to the end of the ingredients list */
-		console.log("Successfully added " + data.name);
+		//TODO: put the data to append to the html in a new var
 
 		//Add the response from the server to the bottom of the list
-		$("ul").append('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data.name + ' action = "outOfStock" method="POST">' + 
-		'<input type = "hidden" name = "id" value = ' + data.id + '></br><input type = "hidden" name = "name" value = ' + data.name + '></br>' + 
+		$("ul").append('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + ' action = "outOfStock" method="POST">' + 
+		'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type = "hidden" name = "name" value = ' + data.name + '></br>' + 
   		'<input type = "hidden" name = "price" value = ' + data.price + '></br><input type = "submit" value = "Out of Stock">' + 
-  		'</form></br><form id="editForm-' + data.name + ' action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
-	  	'<input type = "hidden" name = "id" value = ' + data.id + '></br><input type="submit" value="Edit Item"></form></br>');
+  		'</form></br><form id="editForm-' + data._id + ' action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
+	  	'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type="submit" value="Edit Item"></form></br>');
 	};
 
 	var onSuccessDel = function(data, status) {
 	/* Removed the deleted item from the view without refreshing */
-		console.log("Successfully deleted" + data.name);
+		console.log("Successfully marked " + data.name + " as " + data.inStock);
 		console.log(typeof data.name);
 
-		$("#outOfStock-" + data.name).parent().html("");
+		$("#outOfStock-" + data._id).parent().html(data.name + " is out of stock!");
 	};
 
 	var onSuccessEdit = function(data, status) {
 	/* Edits the item in the view after a successful edit */
-		console.log("Successfully edited " + data.name);
-		console.log(data.name);
+		//TODO: put the data to append to the html in a new var
 
 		//Update the view with the new data
-		//$("#editForm-" + ).html("<p>Editing this shit</p>");
-
-		//Fuck this shit, I'm reloading the page and I don't care
-		window.location.reload();
-
+		$("#editForm-" + data._id).parent().html('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + ' action = "outOfStock" method="POST">' + 
+		'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type = "hidden" name = "name" value = ' + data.name + '></br>' + 
+  		'<input type = "hidden" name = "price" value = ' + data.price + '></br><input type = "submit" value = "Out of Stock">' + 
+  		'</form></br><form id="editForm-' + data._id + ' action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
+	  	'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type="submit" value="Edit Item"></form></br>');	
 	};
 
 	var onSuccessOrder = function(data, status) {
-		console.log("submitted order of " + data);
+	/* Lets the customer know that they have successfully completed their order */
+		
 		$("#completeOrder").html('You have successfully placed your order!');
 	};
 
 	var onSuccessComp = function(data, status ) {
-		console.log("deleted " + data._id);
+	/* Lets the kitchen know that they have successfully removed the order */
 
-		//Remove and replace the order when completed
+		//Remove the order when completed and signal that it has been deleted
 		$("#completed-" + data._id).parent().html("Completed this order!");
 	};
 
@@ -63,18 +65,18 @@ $(document).ready(function() {
 		for (var i=0; i<items.length; i++) {
 			if($(items[i]).prop('checked')) {
 				var price = Number(items[i].value);
-				total += price;
+				if (price) { total += price;};
 			};
 		};
 		$("#total").html(total);
 	};
 
 	$("form").submit(function(event) {
-	/*When any form is clicked on the page, this function is called 
+	/* When any form is clicked on the page, this function is called 
 	The function will then determine which form was submitted and make
 	the appropriate post request*/
 
-	//TODO: make this not freak out about spaces in item names
+
 	//TODO: make this not crash when you try to edit one you just added
 	//TODO: only allow alphabetical characters in name
 
@@ -86,8 +88,8 @@ $(document).ready(function() {
 		var id = $("#" + $formID).find("[name = 'id']").val();
 
 
-		//Sketchy sketchy
-		//TODO: define edit and out of stock forms as classes and check the class type
+		//Sketchy way of determining form type 
+		//TODO: define edit and out of stock forms as classes and check the class type?
 		if ($formID.substring(0, 10) === 'outOfStock') {
 			$.post('outOfStock', {
 			id: id,
@@ -116,6 +118,7 @@ $(document).ready(function() {
 		};
 
 		if ($formID === "orderForm") {
+		//TODO: figure out why "red onions" still shows up in checklist
 			var items = $orderForm.children();
 			var ings = [];
 
@@ -146,8 +149,10 @@ $(document).ready(function() {
 
 	});
 
+	//Any time a box is checked, get the total cost of checked items
 	$( "input[type=checkbox]" ).on( "click", getChecked );
 
+	
 });
 
 

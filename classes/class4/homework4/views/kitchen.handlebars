@@ -2,9 +2,9 @@
 <h2>Pending orders:</h2>
 <ol>
 {{#each orders}}
-<li>{{this.ingredients}}
+<li>The ingredients are: {{this.ingredients}}
 	<form id = "completed-{{this._id}}" action = "completed" method = "POST">
-		<input type = "hidden" name = "id" value = {{this._id}}>
+		<input type = "hidden" name = "id" value = {{this._id}}></br>
 		<input type = "submit" name = "status" value = "Completed">
 	</form></br>
 </li></br>
