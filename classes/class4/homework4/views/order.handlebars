@@ -1,7 +1,7 @@
 <h2>Order Here</h2>
-<form id = "orderForm">
+<form id = "orderForm" action="submitOrder" method="POST">
 	{{#each ingredients}}
-	<input type="checkbox" name="price" value={{this.price}}>{{this.name}}: ${{this.price}}</br>
+	<input type="checkbox" name={{this.name}} value={{this.price}}>{{this.name}} : ${{this.price}}</br>
 	{{/each}}
 	<input type="submit" value = "Place Order!">
 </form>

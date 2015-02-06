@@ -1,2 +1,12 @@
 <h1>Welcome to the kitchen!</h1>
 <h2>Pending orders:</h2>
+<ol>
+{{#each orders}}
+<li>{{this.ingredients}}
+	<form id = "completed-{{this._id}}" action = "completed" method = "POST">
+		<input type = "hidden" name = "id" value = {{this._id}}>
+		<input type = "submit" name = "status" value = "Completed">
+	</form></br>
+</li></br>
+{{/each}}
+</ol>

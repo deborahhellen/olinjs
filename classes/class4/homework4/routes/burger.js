@@ -7,34 +7,16 @@ var ingredSchema = mongoose.Schema({
 	price: Number
 });
 
+//Defining the order the kitchen gets
+//The kitchen doesn't care about price, so it gets only ingredient names
+var orderSchema = mongoose.Schema({
+	ingredients : [String]
+});
+
 var Ingredient = mongoose.model("Ingredient", ingredSchema);
 
-/*
-//pre-loading the DB with some ingredients
-var beefPatty = new Ingredient({name: "beef patty", price: 3});
-beefPatty.save();
-var bun = new Ingredient({name: "bun", price: 0.5});
-bun.save();
-var lettuce = new Ingredient({name: "lettuce", price: 0.25});
-lettuce.save();
-var tomato = new Ingredient({name: "tomato", price: 0.25});
-tomato.save();
-var mushroom = new Ingredient({name: "mushroom", price: 0.25});
-mushroom.save();
-var onion = new Ingredient({name: "onion", price: 0.25});
-onion.save();
-var cheese = new Ingredient({name: "cheese", price: 0.5});
-cheese.save();
-var ketchup = new Ingredient({name: "ketchup", price: 0.05});
-ketchup.save();*/
+var Order = mongoose.model("Order", orderSchema);
 
-
-/*Shows a list of current ingredients (Name and Price) with Out-of-Stock and edit button.
-Out-of-Stock button will tell the server to label the ingredient as disabled. 
-(Optional: make it toggleable to "add" more of the ingredient.) 
-The ingredient should be removed from the current page without refreshing.
-Edit button allows the user to submit a new name or price for the ingredient 
-which the server will update. The edits should change the ingredient list without refreshing.*/
 
 //Shows the list of available ingredients
 var ingredients = function (req, res) {
@@ -47,6 +29,8 @@ var ingredients = function (req, res) {
 };
 
 var outOfStock = function (req, res) {
+//Flags an item as out of stock 
+//TODO: make this update the status to out of stock rather than just delete
 	var objID = req.body.id;
 	console.log(req.body);
 
@@ -55,11 +39,12 @@ var outOfStock = function (req, res) {
 			console.error("Couldn't find and remove out of stock item", err);
 		};
 		console.log("removed " + removedItem);
-		res.send('Removed ' + removedItem);
+		res.send(removedItem);
 	});
 };
 
 var edit = function(req, res) {
+//Allows users to update the name and price of an item
 	var objID = req.body.id;
 	var newName = req.body.name;
 	var newPrice = req.body.price;
@@ -68,23 +53,27 @@ var edit = function(req, res) {
 		if (err) {
 			console.error("Couldn't update name and price", err);
 		};
-		console.log("the new name is " + ingred.name + " and the new price is " + newPrice);
+		console.log(ingred);
 		res.send(ingred);
 	});
 };
 
 var addIngredient = function(req, res) {
+//Allows the user to add a new ingredient
+	console.log(req.body);
 	var newIngredient = new Ingredient({name: req.body.name, price: req.body.price});
 	newIngredient.save( function(err, ingred, numberAffected) {
 		if (err) {
 			console.error("Couldn't save new item", err);
 		};
+		console.log(ingred);
 		res.send(ingred);
 	});
 
 };
 
 var newOrder = function (req, res) {
+//Shows the user the blank order form with all of the available ingredients
 	Ingredient.find({}, function(err, ingList) {
 		if (err) {
 			console.error("Couldn't find ingredients", err);
@@ -93,11 +82,57 @@ var newOrder = function (req, res) {
 	});
 };
 
+var orders = function (req, res) {
+	Order.find({}, function(err, orders) {
+		if (err) {
+			console.error("Couldn't find any orders", err);
+			res.status(500).send("Couldn't find any orders");
+		};
+		res.render('kitchen', {'orders': orders});
+	});
+};
+
+var submitOrder = function (req, res) {
+	//save all of the foods that the user checked in a group
+
+	//Get a list of the ingredients in the order
+	var orderIng = JSON.parse(req.body.ingredients);
+	console.log(orderIng);
+
+	var newOrder = new Order ({ingredients: orderIng});
+
+	newOrder.save( function(err, order) {
+		if (err) {
+			console.error("Couldn't save new order", err);
+			res.status(500).send("Couldn't save new order");
+		};
+		res.send(order);
+	});
+};
+
+var completedOrder = function (req, res) {
+//Removes the order from the database once "completed"
+	var orderId = req.body.id; 
+	console.log(orderId);
+
+	Order.findOneAndRemove({ _id : orderId}, function(err, removedItem) {
+		if (err) {
+			console.error("Couldn't find and remove out of stock item", err);
+		};
+		console.log("removed " + removedItem);
+		res.send(removedItem);
+	});
+};
+
+
+module.exports.orders = orders;
 module.exports.newOrder = newOrder;
 module.exports.ingredients = ingredients;
 module.exports.outOfStock = outOfStock;
 module.exports.edit = edit;
 module.exports.addIngredient = addIngredient;
+module.exports.submitOrder = submitOrder;
+module.exports.completedOrder = completedOrder;
 	
 
 

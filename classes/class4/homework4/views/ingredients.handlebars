@@ -11,14 +11,14 @@
 
 <ul id = "list">
 {{#each ingredients}}
-  <li>{{this.name}}: ${{this.price}}
-  	<form id = "outOfStockForm" action = "outOfStock" method="POST">
+  <li>{{this.name}} : ${{this.price}}
+  	<form id = "outOfStock-{{this.name}}" action = "outOfStock" method="POST">
   		<input type = "hidden" name = "id" value = {{this._id}}></br>
   		<input type = "hidden" name = "name" value = {{this.name}}></br>
   		<input type = "hidden" name = "price" value = {{this.price}}></br>
   		<input type = "submit" value = "Out of Stock">
   	</form></br>
-	<form id="editForm" action="edit" method="POST">
+	<form id="editForm-{{this.name}}" action="edit" method="POST">
 	  New Name:<input type="text" name="name"/><br/>
 	  New Price:<input type="text" name="price"/><br/>
 	  <input type = "hidden" name = "id" value = {{this._id}}></br>

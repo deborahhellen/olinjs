@@ -25,7 +25,7 @@ app.get('/', index.home);
 
 app.get('/ingredients', burger.ingredients);
 
-app.get('/kitchen', kitchen.orders);
+app.get('/kitchen', burger.orders);
 
 app.get('/order', burger.newOrder);
 
@@ -35,8 +35,12 @@ app.post('/edit', burger.edit);
 
 app.post('/addIngredient', burger.addIngredient);
 
+app.post('/submitOrder', burger.submitOrder);
 
-var mongoURI = process.env.MONGOURI || "mongodb://localhost/test";
-mongoose.connect(mongoURI);
+app.post('/completed', burger.completedOrder);
+
+
+//var mongoURI = process.env.MONGOURI || "mongodb://localhost/ingredients";
+mongoose.connect('mongodb://localhost/ingredients');
 
 app.listen(3000);
