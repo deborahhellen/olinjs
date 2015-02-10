@@ -1,7 +1,12 @@
 var path = require('path');
-var mongoose = require('mongoose');
+var models = require('../models/models');
 
 var routes = {};
+
+var Ingredient = models.Ingredient;
+var Order = models.Order;
+/*var mongoose = require('mongoose');
+
 
 //Defining schema for ingredients
 var ingredSchema = mongoose.Schema({
@@ -19,7 +24,7 @@ var orderSchema = mongoose.Schema({
 var Ingredient = mongoose.model("Ingredient", ingredSchema);
 
 var Order = mongoose.model("Order", orderSchema);
-
+*/
 
 //Shows the list of available ingredients
 routes.ingredients = function (req, res) {

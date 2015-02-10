@@ -15,21 +15,20 @@ $(document).ready(function() {
 
 	var onSuccessAdd = function(data, status) {
 	/* Adds the new item to the end of the ingredients list */
-		//TODO: put the data to append to the html in a new var
 
-		//Add the response from the server to the bottom of the list
-		$("ul").append('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + '" action = "outOfStock" method="POST">' + 
+		var newIng = '<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + '" action = "outOfStock" method="POST">' + 
 		'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type = "hidden" name = "name" value = ' + data.name + '></br>' + 
   		'<input type = "hidden" name = "price" value = ' + data.price + '></br><input type = "submit" value = "Out of Stock">' + 
   		'</form></br><form id="editForm-' + data._id + '" action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
-	  	'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type="submit" value="Edit Item"></form></br>');
+	  	'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type="submit" value="Edit Item"></form></br>';
+
+		//Add the response from the server to the bottom of the list
+		$("ul").append(newIng);
 		
 		///Bind this new form to a submit handler function
 		$("form").submit(function(event) {
-		//TODO: combine this with the form below
-
 			event.preventDefault();
-			console.log("Got form!");
+
 			var $formID = $(this).attr('id');
 
 			var name = $("#" + $formID).find("[name = 'name']").val();
@@ -56,7 +55,7 @@ $(document).ready(function() {
 				.error(onError);			
 			};
 
-	});
+		});
 	};
 
 	var onSuccessDel = function(data, status) {
@@ -69,18 +68,17 @@ $(document).ready(function() {
 
 	var onSuccessEdit = function(data, status) {
 	/* Edits the item in the view after a successful edit */
-		//TODO: put the data to append to the html in a new var
-		//Bind this form to the submit handler function
 
-		//Update the view with the new data
-		$("#editForm-" + data._id).parent().html('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + '" action = "outOfStock" method="POST">' + 
+		var editedIng = '<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + '" action = "outOfStock" method="POST">' + 
 		'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type = "hidden" name = "name" value = ' + data.name + '></br>' + 
   		'<input type = "hidden" name = "price" value = ' + data.price + '></br><input type = "submit" value = "Out of Stock">' + 
   		'</form></br><form id="editForm-' + data._id + '" action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
-	  	'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type="submit" value="Edit Item"></form></br>');
+	  	'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type="submit" value="Edit Item"></form></br>';
+
+		//Update the view with the new data
+		$("#editForm-" + data._id).parent().html(editedIng);
 
 	  	$("form").submit(function(event) {
-		//TODO: combine this with the form below
 
 			event.preventDefault();
 			console.log("Got form!");
@@ -110,7 +108,7 @@ $(document).ready(function() {
 				.error(onError);			
 			};
 
-	});
+		});
 	};
 
 	var onSuccessOrder = function(data, status) {
@@ -139,7 +137,6 @@ $(document).ready(function() {
 		$("#total").html(total);
 	};
 
-//TODO: Make this event handler function assigned to a variable
 	$("form").submit(function(event) {
 	/* When any form is clicked on the page, this function is called 
 	The function will then determine which form was submitted and make

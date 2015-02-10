@@ -43,4 +43,8 @@ app.post('/completed', burger.completedOrder);
 mongoURI = process.env.MONGOURI || "mongodb://localhost/ingredients";
 mongoose.connect(mongoURI);
 
-app.listen(3000);
+var PORT = process.env.PORT || 3000;
+
+app.listen(PORT, function() {
+  console.log("Application running on port:", PORT);
+});
