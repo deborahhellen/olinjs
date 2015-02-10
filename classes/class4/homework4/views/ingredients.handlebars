@@ -1,0 +1,31 @@
+<h2>Burger Ingredients</h2>
+<h3>Add a new ingredient:</h3>
+<form id = "addForm" action="addIngredient" method="POST">
+	Name: <input type= "text" name = "name"></br>
+	Price ($): <input type= "text" name = "price">
+	</br>
+	<input type="submit" value = "Add!">
+</form>
+<h3>These are the currently available ingredients:</h3>
+<div id = "ajaxRes"></div>
+
+<ul id = "list">
+{{#each ingredients}}
+	{{#if this.inStock}}
+	  <li>{{this.name}} : ${{this.price}}
+	  	<form id = "outOfStock-{{this._id}}" action = "outOfStock" method="POST">
+	  		<input type = "hidden" name = "id" value = {{this._id}}></br>
+	  		<input type = "hidden" name = "name" value = {{this.name}}></br>
+	  		<input type = "hidden" name = "price" value = {{this.price}}></br>
+	  		<input type = "submit" value = "Out of Stock">
+	  	</form></br>
+		<form id="editForm-{{this._id}}" action="edit" method="POST">
+		  New Name:<input type="text" name="name"/><br/>
+		  New Price:<input type="text" name="price"/><br/>
+		  <input type = "hidden" name = "id" value = {{this._id}}></br>
+		  <input type="submit" value="Edit Item">
+		</form></br>
+	  </li>
+	 {{/if}}
+{{/each}}
+</ul>
