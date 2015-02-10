@@ -18,11 +18,45 @@ $(document).ready(function() {
 		//TODO: put the data to append to the html in a new var
 
 		//Add the response from the server to the bottom of the list
-		$("ul").append('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + ' action = "outOfStock" method="POST">' + 
+		$("ul").append('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + '" action = "outOfStock" method="POST">' + 
 		'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type = "hidden" name = "name" value = ' + data.name + '></br>' + 
   		'<input type = "hidden" name = "price" value = ' + data.price + '></br><input type = "submit" value = "Out of Stock">' + 
-  		'</form></br><form id="editForm-' + data._id + ' action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
+  		'</form></br><form id="editForm-' + data._id + '" action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
 	  	'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type="submit" value="Edit Item"></form></br>');
+		
+		///Bind this new form to a submit handler function
+		$("form").submit(function(event) {
+		//TODO: combine this with the form below
+
+			event.preventDefault();
+			console.log("Got form!");
+			var $formID = $(this).attr('id');
+
+			var name = $("#" + $formID).find("[name = 'name']").val();
+			var price = $("#" + $formID).find("[name = 'price']").val();
+			var id = $("#" + $formID).find("[name = 'id']").val();
+
+			// Allow edits or deletions of the newly added thing
+			if ($formID.substring(0, 10) === 'outOfStock') {
+				$.post('outOfStock', {
+				id: id,
+				name: name,
+				price: price
+				})
+				.done(onSuccessDel)
+				.error(onError);
+			};
+			if ($formID.substring(0, 8) === 'editForm') {
+				$.post('edit', {
+				id: id,
+				name: name,
+				price: price
+				})
+				.done(onSuccessEdit)
+				.error(onError);			
+			};
+
+	});
 	};
 
 	var onSuccessDel = function(data, status) {
@@ -36,13 +70,47 @@ $(document).ready(function() {
 	var onSuccessEdit = function(data, status) {
 	/* Edits the item in the view after a successful edit */
 		//TODO: put the data to append to the html in a new var
+		//Bind this form to the submit handler function
 
 		//Update the view with the new data
-		$("#editForm-" + data._id).parent().html('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + ' action = "outOfStock" method="POST">' + 
+		$("#editForm-" + data._id).parent().html('<li>' + data.name + " : $" + data.price + '<br><form id = "outOfStock-' + data._id + '" action = "outOfStock" method="POST">' + 
 		'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type = "hidden" name = "name" value = ' + data.name + '></br>' + 
   		'<input type = "hidden" name = "price" value = ' + data.price + '></br><input type = "submit" value = "Out of Stock">' + 
-  		'</form></br><form id="editForm-' + data._id + ' action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
-	  	'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type="submit" value="Edit Item"></form></br>');	
+  		'</form></br><form id="editForm-' + data._id + '" action="edit" method="POST">New Name:<input type="text" name="name"/><br/>New Price:<input type="text" name="price"/><br/>' + 
+	  	'<input type = "hidden" name = "id" value = ' + data._id + '></br><input type="submit" value="Edit Item"></form></br>');
+
+	  	$("form").submit(function(event) {
+		//TODO: combine this with the form below
+
+			event.preventDefault();
+			console.log("Got form!");
+			var $formID = $(this).attr('id');
+
+			var name = $("#" + $formID).find("[name = 'name']").val();
+			var price = $("#" + $formID).find("[name = 'price']").val();
+			var id = $("#" + $formID).find("[name = 'id']").val();
+
+			// Allow edits or deletions of the newly added thing
+			if ($formID.substring(0, 10) === 'outOfStock') {
+				$.post('outOfStock', {
+				id: id,
+				name: name,
+				price: price
+				})
+				.done(onSuccessDel)
+				.error(onError);
+			};
+			if ($formID.substring(0, 8) === 'editForm') {
+				$.post('edit', {
+				id: id,
+				name: name,
+				price: price
+				})
+				.done(onSuccessEdit)
+				.error(onError);			
+			};
+
+	});
 	};
 
 	var onSuccessOrder = function(data, status) {
@@ -71,16 +139,14 @@ $(document).ready(function() {
 		$("#total").html(total);
 	};
 
+//TODO: Make this event handler function assigned to a variable
 	$("form").submit(function(event) {
 	/* When any form is clicked on the page, this function is called 
 	The function will then determine which form was submitted and make
-	the appropriate post request*/
-
-
-	//TODO: make this not crash when you try to edit one you just added
-	//TODO: only allow alphabetical characters in name
+	the appropriate post request */
 
 		event.preventDefault();
+		console.log("Got form!");
 		var $formID = $(this).attr('id');
 
 		var name = $("#" + $formID).find("[name = 'name']").val();
@@ -88,7 +154,6 @@ $(document).ready(function() {
 		var id = $("#" + $formID).find("[name = 'id']").val();
 
 
-		//Sketchy way of determining form type 
 		//TODO: define edit and out of stock forms as classes and check the class type?
 		if ($formID.substring(0, 10) === 'outOfStock') {
 			$.post('outOfStock', {
@@ -153,7 +218,7 @@ $(document).ready(function() {
 	$( "input[type=checkbox]" ).on( "click", getChecked );
 
 	
-});
+}); 
 
 
 
