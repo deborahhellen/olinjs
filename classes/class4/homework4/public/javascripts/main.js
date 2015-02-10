@@ -8,7 +8,7 @@ $(document).ready(function() {
 
 	var onError = function(data, status) {
 	/*Log the status and error to the console
-	This will be generic error generator for my ajax requests*/
+	This will be generic error generator for my ajax requests */
 		console.log("Status: ", status);
 		console.log("Error: ", data);
 	};
@@ -178,12 +178,11 @@ $(document).ready(function() {
 			.done(onSuccessAdd)
 			.error(onError);
 		};
-
 		if ($formID === "orderForm") {
-		//TODO: figure out why "red onions" still shows up in checklist
 			var items = $orderForm.children();
 			var ings = [];
 
+			//Get only the checked items and dump them into a list
 			for (var i=0; i < items.length; i++) {
 				if($(items[i]).prop('checked')) {
 					var price = items[i].name;

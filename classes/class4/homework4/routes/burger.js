@@ -5,26 +5,6 @@ var routes = {};
 
 var Ingredient = models.Ingredient;
 var Order = models.Order;
-/*var mongoose = require('mongoose');
-
-
-//Defining schema for ingredients
-var ingredSchema = mongoose.Schema({
-	name: String,
-	price: Number,
-	inStock: Boolean
-});
-
-//Defining the order the kitchen gets
-//The kitchen doesn't care about price, so it gets only ingredient names
-var orderSchema = mongoose.Schema({
-	ingredients : [String]
-});
-
-var Ingredient = mongoose.model("Ingredient", ingredSchema);
-
-var Order = mongoose.model("Order", orderSchema);
-*/
 
 //Shows the list of available ingredients
 routes.ingredients = function (req, res) {
@@ -39,7 +19,6 @@ routes.ingredients = function (req, res) {
 
 routes.outOfStock = function (req, res) {
 //Flags an item as out of stock 
-//TODO: make this update the status to out of stock rather than just delete
 	var objID = req.body.id;
 	console.log(req.body);
 
