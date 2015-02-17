@@ -1,0 +1,58 @@
+<div class = "background">
+	<img src = "img/angry-twotter.png">
+	<h2>Angry Twotter</h2>
+	<h5>Your source for bird-related aggression in 140 or fewer characters</h5>
+</div>
+
+<div class = "content">
+	<div class = "userMsg">
+		{{#if message}}
+		<p>Hello {{message}}!</p>
+		<form id="logout" action="logout" method="POST">
+			<input type = "submit" value = "Logout">
+		</form>
+		{{else}}
+		<p>Hello, please log in to add twots!</p>
+		<button id = "login"><a href="/login">Log in</a></button>
+		{{/if}}
+	</div>
+	<div class = "twots">
+		<h3>Add a twot</h3>
+		<form id="newTwot" action="newTwot" method = "POST">
+			<input id = "newTwotText" type = "text" name = "twot">
+			<input id = "submitTwot" type = "submit" value = "Add">
+		</form><br>
+		<h3>Twots</h3>
+		<div id = "alert"></div>
+
+		<div class = "twotList">
+			{{#each twots}}
+			<div class = "twot" id = "{{this._id}}">
+				<p>{{this.text}}</p>
+				<p>By: {{this._author.name}}</p>
+				<!--<p>Date: {{this.date}}</p>-->
+				<form class = "deleteTwot" id="delete-{{this._id}}" action="deleteTwot" method="POST">
+					<input type = "hidden" name = "authId" value = "{{this._author._id}}">
+					<input type = "hidden" name = "twotId" value = "{{this._id}}">
+					<input type = "submit" value = "Delete">
+				</form>
+			</div>
+			{{/each}}
+		</div>
+	</div>
+
+	<div class = "userList">
+		<h3>Users</h3>
+		{{#each users}}
+		<div class = "user" id = '{{this._id}}'>
+			<form id="user" action = "userTwots" method = "POST">
+				<input type = "hidden" name = "userId" value = "{{this._id}}">
+				<input type = "submit" value = "{{this.name}}">
+			</form>
+		</div>
+		{{/each}}
+	</div>
+</div>
+<br><br>
+
+
