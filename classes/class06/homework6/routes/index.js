@@ -14,7 +14,7 @@ var home = function (req, res) {
 	if (req.session.userName) {
 		message = req.session.userName;
 	} else {
-		message = "Hello, welcome to the site new user! Please log in.";
+		message = false;
 	};
 
 	//Get all twots in db
@@ -68,6 +68,8 @@ var deleteTwot = function (req, res) {
 	var id = req.body._id;
 	var authId = req.body._author;
 	var sessionId = req.session.userId;
+	console.log("auth id: " + authId);
+	console.log("sessio id: " + sessionId);
 
 	if (authId === sessionId) {
 		Twot.findOneAndRemove({_id: id}, function (err, removedTwot) {

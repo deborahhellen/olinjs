@@ -7,11 +7,10 @@ $(document).ready(function() {
 	};
 
 	var onSuccessAdd = function (data, status) {
-		var newTwot = '<div class = "twot">' + 
+		var newTwot = '<div class = "twot" id = ' + data._id + '>' + 
 					'<p>' + data.text + '</p>' + 
 					'<p>By: ' + data._author + ' </p>' + 
-					'<p>Date: ' + data.date + ' </p>' + 
-					'<form id="delete-' + data._id + '" action="deleteTwot" method="POST">' + 
+					'<form class = "deleteTwot" id="delete-' + data._id + '" action="deleteTwot" method="POST">' + 
 						'<input type = "hidden" name = "authId" value = "' + data._author + '">' + 
 						'<input type = "hidden" name = "twotId" value = "' + data._id + '">' + 
 						'<input type = "submit" value = "Delete">' + 
@@ -20,10 +19,12 @@ $(document).ready(function() {
 		$('.twotList').prepend(newTwot);
 
 		$('#delete-' + data._id).submit( function(event) {
-			$.post('newTwot', {
-				//Figure this out in a minute
+			event.preventDefault();
+			$.post('deleteTwot', {
+				_author: data._author,
+				_id: data._id
 			})
-			.done(onSuccessAdd)
+			.done(onSuccessDel)
 			.error(onError);
 		});
 	};
@@ -31,18 +32,32 @@ $(document).ready(function() {
 	var onSuccessDel = function (data, status) {
 		if (data === "Can't delete someone else's twot!") {
 			$('#alert').html(data);
+			$('#allert').css('color', 'red');
 		} else {
 			$('#' + data._id).remove();
 		};
 	};	
 
 	var onSuccessUser = function (data, status) {
-		console.log(data);
+		//Reset all other twots to black text
+		$('.twot').css('background-color', '#ddd');
+
+		for (var i=0; i<data.length; i++) {
+			//highlight the twots of the selected user
+			console.log(data[i]._id);
+			$('#' + data[i]._id).css('background-color', 'white');
+		};
+	};
+
+	var onSuccessLogout = function (data, status) {
+		$('.userMsg').html('<p>Hello, please log in to add twots!</p>' + 
+			'<button id = "login"><a href="/login">Log in</a></button>');
 	};
 
 	var $twotForm = $('#newTwot');
 	var $delForm = $('.deleteTwot');
 	var $userForm = $('.user');
+	var $logoutForm = $('#logout');
 
 	$twotForm.submit( function(event) {
 		event.preventDefault();
@@ -84,6 +99,14 @@ $(document).ready(function() {
 		})
 		.done(onSuccessUser)
 		.error(onError);
+	});
+
+	$logoutForm.submit( function(event) {
+		event.preventDefault();
+		$.post('logout')
+		.done(onSuccessLogout)
+		.error(onError);
+
 	});
 
 });

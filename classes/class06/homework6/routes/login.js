@@ -14,7 +14,7 @@ var addUser = function (req, res) {
 	if (req.session.userName) {
 		message = "You're already logged in, " + req.session.userName;
 	} else { 
-		message = "Hello, welcome to the site new user!";
+		message = "Hello welcome to the site new user!";
 		req.session.userName = req.body.name;
 	}
 

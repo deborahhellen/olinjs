@@ -9,12 +9,12 @@ button {
 }
 
 button:hover {
-	cursor: hand;
+	cursor: pointer;
 }
 
 button:focus {
 	outline: none;
-	cursor: hand;
+	cursor: pointer;
 }
 
 .submit {
