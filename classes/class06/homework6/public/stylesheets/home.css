@@ -1,0 +1,61 @@
+.background {
+	position: absolute;
+	text-align: center;
+	width: 80%;
+	margin-left: 10%;
+	margin-right: 10%;
+	top:10vh;
+}
+
+.background h2 {
+	font-size: 3.5rem;
+}
+
+.background h5 {
+	font-weight: lighter;
+	font-size: 1.2rem;
+}
+
+.background img {
+	width: 23vw;
+}
+
+.userMsg {
+	text-align: center;
+	width: 100%;
+}
+
+.content {
+	position: absolute;
+	top:100vh;
+	background-color: #8BC0E8;
+	margin-left: 15%;
+	margin-right: 15%;
+	width: 70%;
+	padding: 2rem;
+	border-radius: 1rem;
+	box-sizing: border-box;
+	-moz-box-shadow:    1px 1px .2rem #003D1B;
+   	-webkit-box-shadow:  1px 1px .2rem #003D1B;
+   	box-shadow:         1px 1px .2rem #003D1B;
+}
+
+.content > div {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.twots {
+	width: 65%;
+
+}
+
+.userList {
+	width: 34%;
+	text-align: right;
+}
+
+
+.twot p {
+	display: inline-block;
+}

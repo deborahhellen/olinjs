@@ -1,0 +1,26 @@
+body {
+	font-family: "Lato", sans-serif;
+}
+
+button {
+	-moz-box-shadow:    1px 1px .1rem #003D1B;
+   	-webkit-box-shadow:  1px 1px .1rem #003D1B;
+   	box-shadow:         1px 1px .1rem #003D1B;
+}
+
+button:hover {
+	cursor: hand;
+}
+
+button:focus {
+	outline: none;
+	cursor: hand;
+}
+
+.submit {
+	border: none;
+	height: 1.75rem;
+	width: 3.5rem;
+	background-color: #D1E7F8;
+	border-radius: 1rem;
+}
