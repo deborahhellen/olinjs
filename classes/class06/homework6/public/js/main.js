@@ -9,7 +9,7 @@ $(document).ready(function() {
 	var onSuccessAdd = function (data, status) {
 		var newTwot = '<div class = "twot" id = ' + data._id + '>' + 
 					'<p>' + data.text + '</p>' + 
-					'<p>By: ' + data._author + ' </p>' + 
+					'<p>By: ' + data._author.name + ' </p>' + 
 					'<form class = "deleteTwot" id="delete-' + data._id + '" action="deleteTwot" method="POST">' + 
 						'<input type = "hidden" name = "authId" value = "' + data._author + '">' + 
 						'<input type = "hidden" name = "twotId" value = "' + data._id + '">' + 
@@ -18,10 +18,13 @@ $(document).ready(function() {
 
 		$('.twotList').prepend(newTwot);
 
+		console.log(data._id);
+		console.log(data._author._id);
+
 		$('#delete-' + data._id).submit( function(event) {
 			event.preventDefault();
 			$.post('deleteTwot', {
-				_author: data._author,
+				_author: data._author._id,
 				_id: data._id
 			})
 			.done(onSuccessDel)
@@ -32,7 +35,7 @@ $(document).ready(function() {
 	var onSuccessDel = function (data, status) {
 		if (data === "Can't delete someone else's twot!") {
 			$('#alert').html(data);
-			$('#allert').css('color', 'red');
+			$('#alert').css('color', 'red');
 		} else {
 			$('#' + data._id).remove();
 		};
@@ -79,6 +82,7 @@ $(document).ready(function() {
 
 		var author = $("#" + $twotId).find("[name = 'authId']").val();
 		var id = $("#" + $twotId).find("[name = 'twotId']").val();
+		console.log("author " + author);
 
 		$.post('deleteTwot', {
 			_author: author,

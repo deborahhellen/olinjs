@@ -18,7 +18,7 @@ var home = function (req, res) {
 	};
 
 	//Get all twots in db
-	Twot.find({}).sort({date: -1}).exec(function (err, twots) {
+	Twot.find({}).populate('_author').sort({date: -1}).exec(function (err, twots) {
 		if (err) {
 			console.error("Couldn't find the twots!", err);
 			res.status(500).send("Oops, couldn't find any twots!");
@@ -52,7 +52,14 @@ var newTwot = function (req, res) {
 				console.error("Can't save the twot", err);
 				res.status(500).send("Can't save the twot");
 			} else {
-				res.send(savedTwot);
+				console.log(savedTwot._id);
+				Twot.findOne({_id: savedTwot._id}).populate('_author').exec(function(err, t) {
+					if (err) {
+						res.status(500).send("Cant populate");
+					};
+					console.log(t);
+					res.send(t);
+				});
 			};
 		});
 	} else {

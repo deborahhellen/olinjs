@@ -29,10 +29,10 @@
 			{{#each twots}}
 			<div class = "twot" id = "{{this._id}}">
 				<p>{{this.text}}</p>
-				<p>By: {{this._author}}</p>
+				<p>By: {{this._author.name}}</p>
 				<!--<p>Date: {{this.date}}</p>-->
 				<form class = "deleteTwot" id="delete-{{this._id}}" action="deleteTwot" method="POST">
-					<input type = "hidden" name = "authId" value = "{{this._author}}">
+					<input type = "hidden" name = "authId" value = "{{this._author._id}}">
 					<input type = "hidden" name = "twotId" value = "{{this._id}}">
 					<input type = "submit" value = "Delete">
 				</form>
