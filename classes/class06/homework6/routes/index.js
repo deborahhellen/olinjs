@@ -1,18 +1,20 @@
 var models = require('../models/models');
+var passport = require('passport');
 
 var User = models.User;
 var Twot = models.Twot;
 
 var home = function (req, res) {
 /* Displays all of the current twots and users */
-
+	
 	console.dir(req.cookies);
 	console.dir(req.session);
+	var passportId = req.session.passport.user;
 
 	var message;
 	//Get current logged in user
-	if (req.session.userName) {
-		message = req.session.userName;
+	if (req.session.passport.user) {
+		message = req.user.name;
 	} else {
 		message = false;
 	};
@@ -41,12 +43,14 @@ var newTwot = function (req, res) {
 	var twotText = req.body.twot;
 	var date = new Date();
 	var message;
+	var authorId = req.user._id;
+	console.log(authorId);
 
 	//Get current logged in user
-	if (req.session.userName) {
+	if (req.user) {
 		//If user is logged in, create new twot
 		console.log("making new twot with text: " + twotText);
-		var twot = new Twot({text: twotText, date: date, _author: req.session.userId});
+		var twot = new Twot({text: twotText, date: date, _author: authorId});
 		twot.save( function(err, savedTwot) {
 			if (err) {
 				console.error("Can't save the twot", err);
@@ -67,9 +71,9 @@ var deleteTwot = function (req, res) {
 
 	var id = req.body._id;
 	var authId = req.body._author;
-	var sessionId = req.session.userId;
-	console.log("auth id: " + authId);
-	console.log("sessio id: " + sessionId);
+	var sessionId = req.user._id.toString();
+	console.log(typeof authId);
+	console.log(typeof sessionId);
 
 	if (authId === sessionId) {
 		Twot.findOneAndRemove({_id: id}, function (err, removedTwot) {

@@ -7,7 +7,7 @@ var login = function (req, res) {
 	res.render('login');
 };
 
-var addUser = function (req, res) {
+/*var addUser = function (req, res) {
 	var newUser = new User({name: req.body.name});
 
 	console.log("adding user");
@@ -39,8 +39,6 @@ var logout = function(req, res) {
 	}
 	res.send(".");
 
-}
+}*/
 
 module.exports.login = login;
-module.exports.addUser = addUser;
-module.exports.logout = logout;
