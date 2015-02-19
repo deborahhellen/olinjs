@@ -7,6 +7,21 @@ var login = function (req, res) {
 	res.render('login');
 };
 
+var signup = function (req, res) {
+	var newUser = new User ({username: req.body.username, password: req.body.password});
+
+	console.log('signing up user');
+
+	newUser.save(function(err, user) {
+		if (err) {
+			console.error("Couldn't sign up the new user", err);
+			res.status(500).send("Oops, couldn't save the new user");
+		} else {
+			res.send(user);
+		};
+	});
+};
+
 /*var addUser = function (req, res) {
 	var newUser = new User({name: req.body.name});
 

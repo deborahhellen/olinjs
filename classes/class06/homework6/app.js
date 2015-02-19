@@ -8,6 +8,7 @@ var session = require('express-session');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 
 var index = require('./routes/index');
 var login = require('./routes/login');
@@ -17,36 +18,6 @@ var auth = require('./routes/authentication.js');
 
 var User = models.User;
 var Twot = models.Twot;
-
-/*// config
-passport.use(new FacebookStrategy({
-clientID: config.facebook.clientID,
-clientSecret: config.facebook.clientSecret,
-callbackURL: config.facebook.callbackURL
-},
-function(accessToken, refreshToken, profile, done) {
-	User.findOne({ oauthID: profile.id }, function(err, user) {
-		if(err) { console.log(err); }
-		if (!err && user != null) {
-		  done(null, user);
-		} else {
-		  var user = new User({
-		    oauthID: profile.id,
-		    name: profile.displayName,
-		    created: Date.now()
-		  });
-		  user.save(function(err) {
-		    if(err) {
-		      console.log(err);
-		    } else {
-		      console.log("saving user ...");
-		      done(null, user);
-		    };
-		  });
-		};
-	});
-}
-));	*/
 
 // serialize and deserialize
 passport.serializeUser(function(user, done) {
@@ -89,15 +60,21 @@ app.post('/deleteTwot', index.deleteTwot);
 
 app.post('/userTwots', index.userTwots);
 
-/*app.get('/account', ensureAuthenticated, function(req, res){
-User.findById(req.session.passport.user, function(err, user) {
- if(err) {
-   console.log(err);
- } else {
-   res.send(user.name);
- };
+app.get('/signup', function(req, res){
+  res.render('signup');
 });
-});*/
+
+app.post('/login', 
+passport.authenticate('local-signin', { successRedirect: '/', failureRedirect: '/login'}),
+function(req, res) {
+ res.redirect('/');
+});
+
+app.post('/signup',
+  passport.authenticate('signup', { successRedirect: '/', failureRedirect: '/login', failureFlash: true }),
+  function(req, res) {
+ res.redirect('/');
+});
 
 app.get('/auth/facebook',
 passport.authenticate('facebook'),
@@ -107,6 +84,10 @@ app.get('/auth/facebook/callback',
 passport.authenticate('facebook', { failureRedirect: '/login' }),
 function(req, res) {
  res.redirect('/');
+});
+app.get('/logout', function(req, res){
+req.logout();
+res.redirect('/');
 });
 
 mongoURI = process.env.MONGOURI || "mongodb://localhost/twat";
@@ -118,8 +99,4 @@ app.listen(PORT, function() {
   console.log("Application running on port:", PORT);
 });
 
-app.get('/logout', function(req, res){
-req.logout();
-res.redirect('/');
-});
 

@@ -9,9 +9,9 @@ $(document).ready(function() {
 	var onSuccessAdd = function (data, status) {
 		var newTwot = '<div class = "twot" id = ' + data._id + '>' + 
 					'<p>' + data.text + '</p>' + 
-					'<p>By: ' + data._author + ' </p>' + 
+					'<p>By: ' + data._author.username + ' </p>' + 
 					'<form class = "deleteTwot" id="delete-' + data._id + '" action="deleteTwot" method="POST">' + 
-						'<input type = "hidden" name = "authId" value = "' + data._author + '">' + 
+						'<input type = "hidden" name = "authId" value = "' + data._author._id + '">' + 
 						'<input type = "hidden" name = "twotId" value = "' + data._id + '">' + 
 						'<input type = "submit" value = "Delete">' + 
 					'</form></div>';
@@ -21,7 +21,7 @@ $(document).ready(function() {
 		$('#delete-' + data._id).submit( function(event) {
 			event.preventDefault();
 			$.post('deleteTwot', {
-				_author: data._author,
+				_author: data._author._id,
 				_id: data._id
 			})
 			.done(onSuccessDel)
@@ -30,7 +30,7 @@ $(document).ready(function() {
 	};
 
 	var onSuccessDel = function (data, status) {
-		if (data === "Can't delete someone else's twot!") {
+		if (data === "Can't delete someone else's twot!" || data === "Must be logged in to delete a twot!") {
 			$('#alert').html(data);
 			$('#allert').css('color', 'red');
 		} else {

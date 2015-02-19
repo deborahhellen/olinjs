@@ -7,8 +7,9 @@ var twotSchema = mongoose.Schema({
 });
 
 var userSchema = mongoose.Schema({
+	username: String, 
 	oauthID: Number,
-	name: String,
+	password: String,
 	created: Date,
 	twots: [{type: mongoose.Schema.Types.ObjectId, ref: 'Twot'}]
 });

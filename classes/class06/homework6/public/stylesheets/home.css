@@ -116,11 +116,21 @@
 	color:#444;
 }
 
-#login {
+#login, #logout {
 	box-shadow: none;
+	border: none;
+	height: 1.75rem;
+	width: 3.5rem;
+	background-color: #D1E7F8;
+	border-radius: 1rem;
 }
 
-#login a {
+#login a, #logout a {
+	text-decoration: none;
+}
+
+.userMsg a {
+	border:none;
 	text-decoration: none;
 }
 

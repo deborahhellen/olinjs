@@ -38,6 +38,11 @@
 	cursor: hand;
 }
 
+.login-link a {
+	text-decoration: none;
+
+}
+
 
 
 

@@ -8,10 +8,10 @@
 	<div class = "userMsg">
 		{{#if message}}
 		<p>Hello {{message}}!</p>
-		<button id = "logout"><a href='/logout'>Log out</a></button>
+		<button id = "logout"><a href = "/logout">Log out</a></button>
 		{{else}}
 		<p>Hello, please log in to add twots!</p>
-		<button id = "login"><a href="/login">Log in</a></button>
+		<button id = "login"><a href = "/login">Log in</a></button>
 		{{/if}}
 	</div>
 	<div class = "twots">
@@ -27,10 +27,9 @@
 			{{#each twots}}
 			<div class = "twot" id = "{{this._id}}">
 				<p>{{this.text}}</p>
-				<p>By: {{this._author}}</p>
-				<!--<p>Date: {{this.date}}</p>-->
+				<p>By: {{this._author.username}}</p>
 				<form class = "deleteTwot" id="delete-{{this._id}}" action="deleteTwot" method="POST">
-					<input type = "hidden" name = "authId" value = "{{this._author}}">
+					<input type = "hidden" name = "authId" value = "{{this._author._id}}">
 					<input type = "hidden" name = "twotId" value = "{{this._id}}">
 					<input type = "submit" value = "Delete">
 				</form>
@@ -45,7 +44,7 @@
 		<div class = "user" id = '{{this._id}}'>
 			<form id="user" action = "userTwots" method = "POST">
 				<input type = "hidden" name = "userId" value = "{{this._id}}">
-				<input type = "submit" value = "{{this.name}}">
+				<input type = "submit" value = "{{this.username}}">
 			</form>
 		</div>
 		{{/each}}
